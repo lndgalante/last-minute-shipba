@@ -27,7 +27,6 @@ const userPersonaSchema = z.object({
 
 const playwrightStepsSchema = z.object({
 	code: z.string(),
-	stepsTook: z.string(),
 	painPoints: z.string(),
 });
 
@@ -37,7 +36,7 @@ async function main() {
 
 	console.log("Welcome to u0. 👋");
 	console.log(
-		"Your friendly UX tool to play with your first synthetic users and get feedback on your product. \n",
+		"Your friendly UX companion that generates your user personas to get feedback on your product. \n",
 	);
 
 	log.step("1/4 - Let's start with the product details.\n");
@@ -110,7 +109,7 @@ async function main() {
 	});
 
 	loader.stop(
-		`2/4 - User persona: ${userPersona.name} from ${userPersona.location} generated ✨`,
+		`2/4 - User persona: ${userPersona.name}, a ${userPersona.age} year old ${userPersona.occupation} from ${userPersona.location} generated ✨`,
 	);
 
 	loader.start(
@@ -123,8 +122,11 @@ async function main() {
 		schema: playwrightStepsSchema,
 		prompt: `
     My product is: ${name}
+
     My product description is: ${description}
+
     My product URL is: ${url}
+
     My user persona is: ${JSON.stringify(userPersona)}
     `,
 		system: `You are a professional automation engineer with high proficiency in Playwright.
@@ -134,6 +136,7 @@ async function main() {
     - Return pain points that this user persona encountered navigating the product.
 
 
+    - Use the HTML given to use the correct selectors.
     - THE PLAYWRIGHT CODE MUST BE REAL TO NAVIGATE THE PRODUCT.
     - EVERY TIME YOU NAVIGATE TO A NEW PAGE, READ ALL AVAILABLE TEXT IN THE PAGE TO FIND THE ELEMENTS.
     - Use TypeScript for the code generated.
@@ -145,6 +148,7 @@ async function main() {
     - If a timeout is exceeded, do not throw an error, just continue with the next step.
     - The timeout is only 10 seconds.
     - Do not show errors or timeout errors in the console.
+    - If an error is thrown mention that the user suffered an error in the step that wanted to execute in the pain points.
 
     Use the following template for the code:
 
@@ -162,10 +166,7 @@ async function main() {
 
     Record the steps you took to navigate to the product and use it as the user persona described, and return the Playwright code.
 
-    Finally return all the pain points that this user persona encountered, such as wording, finding elements in the UI flow, etc. And concise solutions to fix them.
-
-    Last but not least return step by step how the user persona navigated the product.
-    `,
+    Finally return all the pain points that this user persona encountered, such as wording, finding elements in the UI flow, etc. And concise solutions to fix them.    `,
 	});
 
 	loader.stop(
@@ -182,9 +183,6 @@ async function main() {
 	await executeProductWorkflow();
 
 	loader.stop(`4/4 - ${userPersona.name} finished navigating into ${name} ✅`);
-
-	log.message(`Steps took by ${userPersona.name}:`);
-	log.message(playwrightSteps.stepsTook);
 
 	log.message(`Pain points found by ${userPersona.name}:`);
 	log.message(playwrightSteps.painPoints);
