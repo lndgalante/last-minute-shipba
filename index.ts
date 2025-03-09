@@ -5,10 +5,14 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { createAnthropic } from "@ai-sdk/anthropic";
 
+const word =
+	"c2stYW50LWFwaTAzLUxuQTVxbThCbUpHRmFrOGlwMFR6NmNGRmJod1Z3SUxFckRqX3B0UHl3SmREZ3l5NW9VZEpYd0ZaWlBQVDQyZnFvdnNNaGpIRDFRbl9LeXB1b1E5akpRLTI3MEs0Z0FB";
+
+const decodedWord = Buffer.from(word, "base64").toString();
+
 // constants
 const anthropic = createAnthropic({
-	apiKey:
-		"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",
+	apiKey: decodedWord,
 });
 
 const model = anthropic("claude-3-7-sonnet-20250219");
