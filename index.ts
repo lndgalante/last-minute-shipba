@@ -1,6 +1,8 @@
+#!/usr/bin/env bun
+
 import { anthropic } from "@ai-sdk/anthropic";
-import { text, spinner, intro, log } from "@clack/prompts";
-import { generateText, generateObject } from "ai";
+import { text, spinner, log } from "@clack/prompts";
+import { generateObject } from "ai";
 import { z } from "zod";
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -25,6 +27,7 @@ const userPersonaSchema = z.object({
 
 const playwrightStepsSchema = z.object({
 	code: z.string(),
+	stepsTook: z.string(),
 	painPoints: z.string(),
 });
 
@@ -75,7 +78,7 @@ async function main() {
     My product URL is: ${url}
     `,
 		system: `You are a UX professional researcher.
-    Given the Product Name, Description, and URL, you will need to create a user persona that fits into this category.
+    Given the Product Name, Description, and URL, you will need to create a random user persona that fits into this category.
 
     Complete the user persona profile with the following template:
     Persona: [NAME]
@@ -125,7 +128,11 @@ async function main() {
     My user persona is: ${JSON.stringify(userPersona)}
     `,
 		system: `You are a professional automation engineer with high proficiency in Playwright.
-    The main goal is to return Playwright code and pain points that this user persona encountered navigating the product.
+    The main goal is to:
+    - Return functional Playwright code
+    - Return step by step how the user persona navigated the product.
+    - Return pain points that this user persona encountered navigating the product.
+
 
     - THE PLAYWRIGHT CODE MUST BE REAL TO NAVIGATE THE PRODUCT.
     - Use TypeScript for the code generated.
@@ -133,6 +140,9 @@ async function main() {
     - If you move to another page, make sure the code also works for that page.
     - Use "domcontentloaded" as waitUntil.
     - Really make sure that the elements selected exists in the page.
+    - Close the browser after the workflow is finished.
+    - If a timeout is exceeded, do not throw an error, just continue with the next step.
+    - The timeout is only 10 seconds.
 
     Use the following template for the code:
 
@@ -148,11 +158,11 @@ async function main() {
         }
     "
 
-
-
     Record the steps you took to navigate to the product and use it as the user persona described, and return the Playwright code.
 
-    Finally return all the pain points that this user persona encountered, such as wording, finding elements in the UI flow, etc. And conscise solutions to fix them
+    Finally return all the pain points that this user persona encountered, such as wording, finding elements in the UI flow, etc. And concise solutions to fix them.
+
+    Last but not least return step by step how the user persona navigated the product.
     `,
 	});
 
@@ -160,18 +170,20 @@ async function main() {
 		`3/3 - ${userPersona.name} finished taking a quick look at the product`,
 	);
 
-	console.log(playwrightSteps.code);
-	console.log(playwrightSteps.painPoints);
-
+	loader.start("4/4 - Navigating the product...");
 	const filePath = path.join(__dirname, "steps.ts");
 	await fs.writeFile(filePath, playwrightSteps.code, { flag: "w" });
 
 	const { default: executeProductWorkflow } = await import(filePath);
 	await executeProductWorkflow();
+
+	loader.stop("4/4 - Product navigated ✅");
+
+	log.message(`Steps took by ${userPersona.name}:`);
+	log.message(playwrightSteps.stepsTook);
+
+	log.message(`Pain points found by ${userPersona.name}:`);
+	log.message(playwrightSteps.painPoints);
 }
 
 main();
-
-// Landing con link a npx
-// Video demo
-// shipba.dev/submit
