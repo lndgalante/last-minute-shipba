@@ -1,0 +1,177 @@
+import { anthropic } from "@ai-sdk/anthropic";
+import { text, spinner, intro, log } from "@clack/prompts";
+import { generateText, generateObject } from "ai";
+import { z } from "zod";
+import fs from "node:fs/promises";
+import path from "node:path";
+
+// constants
+const model = anthropic("claude-3-5-haiku-latest");
+
+const userPersonaSchema = z.object({
+	name: z.string(),
+	age: z.number(),
+	occupation: z.string(),
+	location: z.string(),
+	background: z.string(),
+	technologyProfile: z.string(),
+	goals: z.string(),
+	painPoints: z.string(),
+	whyTheyLoveIt: z.string(),
+	typicalUseCases: z.string(),
+	technologyComfortLevel: z.string(),
+	decisionFactors: z.string(),
+});
+
+const playwrightStepsSchema = z.object({
+	code: z.string(),
+	painPoints: z.string(),
+});
+
+// core
+async function main() {
+	const loader = spinner();
+
+	console.log("Welcome to u0. 👋");
+	console.log(
+		"Your friendly UX tool to play with your first synthetic users and get feedback on your product. \n",
+	);
+
+	log.step("1/3 - Let's start with the product details.\n");
+
+	const name = await text({
+		message: "What is the product name?",
+		defaultValue: "Vercel",
+	});
+
+	const description = await text({
+		message: "What is the product description?",
+		defaultValue:
+			"Vercel is a platform for building and deploying web applications.",
+	});
+
+	const url = await text({
+		message: "What is the product URL?",
+		defaultValue: "https://vercel.com/home",
+	});
+
+	if (
+		typeof name !== "string" ||
+		typeof description !== "string" ||
+		typeof url !== "string"
+	) {
+		console.log("Please provide all the required information.");
+		return;
+	}
+
+	loader.start("2/3 - Generating user persona...");
+	const { object: userPersona } = await generateObject({
+		model,
+		schemaName: "userPersona",
+		schema: userPersonaSchema,
+		prompt: `
+    My product is: ${name}
+    My product description is: ${description}
+    My product URL is: ${url}
+    `,
+		system: `You are a UX professional researcher.
+    Given the Product Name, Description, and URL, you will need to create a user persona that fits into this category.
+
+    Complete the user persona profile with the following template:
+    Persona: [NAME]
+    Age: [AGE]
+    Occupation: [OCCUPATION]
+    Location: [LOCATION]
+
+    Background:
+    - [BACKGROUND]
+
+    Technology Profile:
+    - [TECHNOLOGY PROFILE]
+
+    Goals:
+    - [GOALS]
+
+    Pain Points:
+    - [PAIN POINTS]
+
+    Why [NAME] Loves [PRODUCT NAME]:
+    - [WHY THEY LOVE IT]
+
+    Typical Use Cases:
+    - [TYPICAL USE CASES]
+
+    Technology Comfort Level: [TECHNOLOGY COMFORT LEVEL]
+    Decision Factors: [DECISION FACTORS]
+    `,
+	});
+
+	loader.stop(
+		`2/3 - User persona: ${userPersona.name} from ${userPersona.location} generated ✨`,
+	);
+
+	loader.start(
+		`3/3 - ${userPersona.name} is taking an initial look at the product`,
+	);
+
+	const { object: playwrightSteps } = await generateObject({
+		model,
+		schemaName: "playwrightSteps",
+		schema: playwrightStepsSchema,
+		prompt: `
+    My product is: ${name}
+    My product description is: ${description}
+    My product URL is: ${url}
+    My user persona is: ${JSON.stringify(userPersona)}
+    `,
+		system: `You are a professional automation engineer with high proficiency in Playwright.
+    The main goal is to return Playwright code and pain points that this user persona encountered navigating the product.
+
+    - THE PLAYWRIGHT CODE MUST BE REAL TO NAVIGATE THE PRODUCT.
+    - Use TypeScript for the code generated.
+    - Return a export default function that could be imported and executed.
+    - If you move to another page, make sure the code also works for that page.
+    - Use "domcontentloaded" as waitUntil.
+    - Really make sure that the elements selected exists in the page.
+
+    Use the following template for the code:
+
+    "
+      import { chromium, type Browser, type Page } from "playwright";
+
+      export default async function executeProductWorkflow() {
+        // Initialize browser
+        const browser: Browser = await chromium.launch({ headless: false });
+        const page: Page = await browser.newPage();
+
+        [CODE GENERATED HERE]
+        }
+    "
+
+
+
+    Record the steps you took to navigate to the product and use it as the user persona described, and return the Playwright code.
+
+    Finally return all the pain points that this user persona encountered, such as wording, finding elements in the UI flow, etc. And conscise solutions to fix them
+    `,
+	});
+
+	loader.stop(
+		`3/3 - ${userPersona.name} finished taking a quick look at the product`,
+	);
+
+	console.log(playwrightSteps.code);
+	console.log(playwrightSteps.painPoints);
+
+	const filePath = path.join(__dirname, "steps.ts");
+	await fs.writeFile(filePath, playwrightSteps.code, { flag: "w" });
+
+	const { default: executeProductWorkflow } = await import(filePath);
+	await executeProductWorkflow();
+}
+
+main();
+
+// Landing con link a npx
+// Video demo
+// shipba.dev/submit

@@ -1,0 +1,23 @@
+{
+	"name": "last-minute-shipba",
+	"module": "index.ts",
+	"type": "module",
+	"private": true,
+	"devDependencies": {
+		"@playwright/test": "^1.51.0",
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	},
+	"dependencies": {
+		"@ai-sdk/anthropic": "^1.1.15",
+		"@clack/core": "^0.4.1",
+		"@clack/prompts": "^0.10.0",
+		"ai": "^4.1.54",
+		"zod": "^3.24.2"
+	},
+	"scripts": {
+		"dev": "bun run --watch index.ts"
+	}
+}
