@@ -1,15 +1,17 @@
-import { anthropic } from "@ai-sdk/anthropic";
+import { createOpenAI } from "@ai-sdk/openai";
 import { text, spinner, log } from "@clack/prompts";
 import { generateObject } from "ai";
 import { z } from "zod";
 import fs from "node:fs/promises";
 import path from "node:path";
 
-process.env.ANTHROPIC_API_KEY =
-	"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 ";
-
 // constants
-const model = anthropic("claude-3-5-haiku-latest");
+const openai = createOpenAI({
+	apiKey:
+		"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",
+});
+
+const model = openai("gpt-4o-mini");
 
 const userPersonaSchema = z.object({
 	name: z.string(),
