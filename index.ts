@@ -32,6 +32,7 @@ const playwrightStepsSchema = z.object({
 
 // core
 async function main() {
+	console.clear();
 	const loader = spinner();
 
 	console.log("Welcome to u0. 👋");

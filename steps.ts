@@ -6,29 +6,34 @@ export default async function executeProductWorkflow() {
   const page: Page = await browser.newPage();
 
   try {
-    // Navigate to Google homepage
-    await page.goto('https://www.google.com/', { waitUntil: 'domcontentloaded' });
+    // Navigate to Vercel homepage
+    await page.goto('https://vercel.com/home', { waitUntil: 'domcontentloaded' });
 
-    // Wait for the search input to be visible
-    await page.waitForSelector('input[name="q"]', { timeout: 10000 });
+    // Click on "Sign Up" or "Get Started" button
+    await page.getByRole('link', { name: /sign up|get started/i }).first().click({ timeout: 10000 });
 
-    // Enter search query for digital marketing trends
-    await page.fill('input[name="q"]', 'Latest digital marketing trends 2023');
+    // Choose GitHub as authentication method
+    await page.getByRole('button', { name: /continue with github/i }).click({ timeout: 10000 });
 
-    // Click search button
-    await page.click('input[name="btnG"]');
+    // Simulate GitHub login (this would typically require actual credentials in a real scenario)
+    await page.getByLabel('Username or email address').fill('alex.rodriguez@example.com', { timeout: 10000 });
+    await page.getByLabel('Password').fill('SecureDev2023!', { timeout: 10000 });
+    await page.getByRole('button', { name: /sign in/i }).click({ timeout: 10000 });
 
-    // Wait for search results to load
-    await page.waitForSelector('#search', { timeout: 10000 });
+    // Navigate to New Project creation
+    await page.getByRole('link', { name: /new project/i }).click({ timeout: 10000 });
 
-    // Open first search result in a new tab
-    const [newPage] = await Promise.all([
-      page.context().waitForEvent('page'),
-      page.locator('#search .g a').first().click()
-    ]);
+    // Select import from GitHub
+    await page.getByRole('button', { name: /import git repository/i }).click({ timeout: 10000 });
 
-    // Wait for the new page to load
-    await newPage.waitForLoadState('domcontentloaded');
+    // Select a Next.js project (matching persona's tech stack)
+    await page.getByText(/next\.js/i).click({ timeout: 10000 });
+
+    // Configure project deployment
+    await page.getByRole('button', { name: /deploy/i }).click({ timeout: 10000 });
+
+    // Wait for deployment to complete
+    await page.waitForSelector('text=Deployment successful', { timeout: 10000 });
 
     // Close the browser
     await browser.close();

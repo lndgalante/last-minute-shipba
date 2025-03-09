@@ -58,9 +58,14 @@ Un UX Researcher junior cuesta aprox. $50.000 - $80.000/año (sin contar herrami
 
 🔹 u0 puede reducir estos costos en +80% al permitir iteraciones inmediatas sin necesidad de coordinación ni testers reales.
 
+Escenario posible:
 
+- Salario de UX Researcher: $60,000 anuales
+- Incentivos/reclutamiento: $18,000 anuales
+- Costo de análisis: $12,000 anuales
+- Total: $90,000 anuales
 
+Si u0 automatiza el 80% del proceso, solo se incurre en el 20% del costo, es decir, $18,000 anuales.
+Ahorro anual: $90,000 - $18,000 = $72,000
 
-
-
-
+Y por último si restamos el modelo entreprisa que la empresa ahorraría alrededor de $71.700 por año.

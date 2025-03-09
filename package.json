@@ -18,6 +18,7 @@
 	},
 	"files": ["u0"],
 	"scripts": {
+		"start": "ANTHROPIC_API_KEY=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 bun run index.ts",
 		"dev": "bun run --watch index.ts",
 		"build": "bun build ./index.ts --compile --outfile u0",
 		"postinstall": "npx playwright install",
