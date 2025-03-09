@@ -1,5 +1,6 @@
 # u0
 
+primero, dónde estamos parados?
 
 Es realmente increíble lo que podemos hacer hoy en día con herramientas como v0, Bolt, o Lovable para generar prototipos de productos.
 
