@@ -31,7 +31,33 @@ u0 es una herramienta de UX para iterar tu producto rápidamente a partir de AI-
 
 
 
-# DEMO TIME!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# DEMO TIME I
+
+
+
+
+
+
+
+
+
 
 
 
@@ -100,6 +126,16 @@ u0 te va ayudar con lo siguiente:
 
 
 3. Y por último u0 va a navegar como lo hizo tu user persona para encontrar posibles mejoras
+
+
+
+
+
+
+# DEMO TIME II
+
+
+
 
 
 # Modelo de Negocio
