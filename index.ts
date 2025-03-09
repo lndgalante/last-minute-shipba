@@ -5,6 +5,9 @@ import { z } from "zod";
 import fs from "node:fs/promises";
 import path from "node:path";
 
+process.env.ANTHROPIC_API_KEY =
+	"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 ";
+
 // constants
 const model = anthropic("claude-3-5-haiku-latest");
 
@@ -30,53 +33,52 @@ const playwrightStepsSchema = z.object({
 
 // core
 async function main() {
-	try {
-		console.clear();
-		const loader = spinner();
+	console.clear();
+	const loader = spinner();
 
-		console.log("Welcome to u0. 👋");
-		console.log(
-			"Your friendly UX companion that generates your user personas to get feedback on your product. \n",
-		);
+	console.log("Welcome to u0. 👋");
+	console.log(
+		"Your friendly UX companion that generates your user personas to get feedback on your product. \n",
+	);
 
-		log.step("1/4 - Let's start with the product details.\n");
+	log.step("1/4 - Let's start with the product details.\n");
 
-		const name = await text({
-			message: "What is the product name?",
-			defaultValue: "Vercel",
-		});
+	const name = await text({
+		message: "What is the product name?",
+		defaultValue: "Vercel",
+	});
 
-		const description = await text({
-			message: "What is the product description?",
-			defaultValue:
-				"Vercel is a platform for building and deploying web applications.",
-		});
+	const description = await text({
+		message: "What is the product description?",
+		defaultValue:
+			"Vercel is a platform for building and deploying web applications.",
+	});
 
-		const url = await text({
-			message: "What is the product URL?",
-			defaultValue: "https://vercel.com/home",
-		});
+	const url = await text({
+		message: "What is the product URL?",
+		defaultValue: "https://vercel.com/home",
+	});
 
-		if (
-			typeof name !== "string" ||
-			typeof description !== "string" ||
-			typeof url !== "string"
-		) {
-			console.log("Please provide all the required information.");
-			return;
-		}
+	if (
+		typeof name !== "string" ||
+		typeof description !== "string" ||
+		typeof url !== "string"
+	) {
+		console.log("Please provide all the required information.");
+		return;
+	}
 
-		loader.start("2/4 - Generating user persona...");
-		const { object: userPersona } = await generateObject({
-			model,
-			schemaName: "userPersona",
-			schema: userPersonaSchema,
-			prompt: `
+	loader.start("2/4 - Generating user persona...");
+	const { object: userPersona } = await generateObject({
+		model,
+		schemaName: "userPersona",
+		schema: userPersonaSchema,
+		prompt: `
       My product is: ${name}
       My product description is: ${description}
       My product URL is: ${url}
       `,
-			system: `You are a UX professional researcher.
+		system: `You are a UX professional researcher.
       Given the Product Name, Description, and URL, you will need to create a random user persona that fits into this category.
 
       Complete the user persona profile with the following template:
@@ -106,21 +108,21 @@ async function main() {
       Technology Comfort Level: [TECHNOLOGY COMFORT LEVEL]
       Decision Factors: [DECISION FACTORS]
       `,
-		});
+	});
 
-		loader.stop(
-			`2/4 - User persona: ${userPersona.name}, a ${userPersona.age} year old ${userPersona.occupation} from ${userPersona.location} generated ✨`,
-		);
+	loader.stop(
+		`2/4 - User persona: ${userPersona.name}, a ${userPersona.age} year old ${userPersona.occupation} from ${userPersona.location} generated ✨`,
+	);
 
-		loader.start(
-			`3/4 - ${userPersona.name} is taking an initial look at the product`,
-		);
+	loader.start(
+		`3/4 - ${userPersona.name} is taking an initial look at the product`,
+	);
 
-		const { object: playwrightSteps } = await generateObject({
-			model,
-			schemaName: "playwrightSteps",
-			schema: playwrightStepsSchema,
-			prompt: `
+	const { object: playwrightSteps } = await generateObject({
+		model,
+		schemaName: "playwrightSteps",
+		schema: playwrightStepsSchema,
+		prompt: `
       My product is: ${name}
 
       My product description is: ${description}
@@ -129,7 +131,7 @@ async function main() {
 
       My user persona is: ${JSON.stringify(userPersona)}
       `,
-			system: `You are a professional automation engineer with high proficiency in Playwright.
+		system: `You are a professional automation engineer with high proficiency in Playwright.
       The main goal is to:
       - Return functional Playwright code
       - Return step by step how the user persona navigated the product.
@@ -167,31 +169,25 @@ async function main() {
       Record the steps you took to navigate to the product and use it as the user persona described, and return the Playwright code.
 
       Finally return all the pain points that this user persona encountered, such as wording, finding elements in the UI flow, etc. And concise solutions to fix them.    `,
-		});
+	});
 
-		loader.stop(
-			`3/4 - ${userPersona.name} finished taking a quick look at the product`,
-		);
+	loader.stop(
+		`3/4 - ${userPersona.name} finished taking a quick look at the product`,
+	);
 
-		loader.start(
-			`4/4 - Navigating into ${name} on behalf of ${userPersona.name}`,
-		);
-		const filePath = path.join(__dirname, "steps.ts");
-		await fs.writeFile(filePath, playwrightSteps.code, { flag: "w" });
+	loader.start(
+		`4/4 - Navigating into ${name} on behalf of ${userPersona.name}`,
+	);
+	const filePath = path.join(__dirname, "steps.ts");
+	await fs.writeFile(filePath, playwrightSteps.code, { flag: "w" });
 
-		const { default: executeProductWorkflow } = await import(filePath);
-		await executeProductWorkflow();
+	const { default: executeProductWorkflow } = await import(filePath);
+	await executeProductWorkflow();
 
-		loader.stop(
-			`4/4 - ${userPersona.name} finished navigating into ${name} ✅`,
-		);
+	loader.stop(`4/4 - ${userPersona.name} finished navigating into ${name} ✅`);
 
-		log.message(`Pain points found by ${userPersona.name}:`);
-		log.message(playwrightSteps.painPoints);
-	} catch (error) {
-		console.log("\n ~ main ~ error:", error);
-		console.error(error);
-	}
+	log.message(`Pain points found by ${userPersona.name}:`);
+	log.message(playwrightSteps.painPoints);
 }
 
 main();
