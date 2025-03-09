@@ -1,15 +1,13 @@
 # last-minute-shipba
 
-To install dependencies:
+1. Install Bun
 
 ```bash
-bun install
+curl -fsSL https://bun.sh/install | bash
 ```
 
-To run:
+2. Run the project:
 
 ```bash
-bun run index.ts
+bun run start
 ```
-
-This project was created using `bun init` in bun v1.2.4. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
