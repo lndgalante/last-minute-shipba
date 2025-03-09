@@ -1,17 +1,17 @@
-import { createOpenAI } from "@ai-sdk/openai";
 import { text, spinner, log } from "@clack/prompts";
 import { generateObject } from "ai";
 import { z } from "zod";
 import fs from "node:fs/promises";
 import path from "node:path";
+import { createAnthropic } from "@ai-sdk/anthropic";
 
 // constants
-const openai = createOpenAI({
+const anthropic = createAnthropic({
 	apiKey:
-		"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",
+		"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",
 });
 
-const model = openai("gpt-4o-mini");
+const model = anthropic("claude-3-7-sonnet-20250219");
 
 const userPersonaSchema = z.object({
 	name: z.string(),
@@ -136,14 +136,14 @@ async function main() {
       `,
 			system: `You are a professional automation engineer with high proficiency in Playwright.
       The main goal is to:
-      - Return functional Playwright code
+      - Return functional Playwright code.
       - Return step by step how the user persona navigated the product.
       - Return pain points that this user persona encountered navigating the product.
 
 
-      - Use the HTML given to use the correct selectors.
+      Playwright Rules:
       - THE PLAYWRIGHT CODE MUST BE REAL TO NAVIGATE THE PRODUCT.
-      - EVERY TIME YOU NAVIGATE TO A NEW PAGE, READ ALL AVAILABLE TEXT IN THE PAGE TO FIND THE ELEMENTS.
+      - EVERY TIME YOU NAVIGATE TO A NEW PAGE, READ ALL AVAILABLE TEXT IN THE PAGE TO USER LATER THE CORRECT SELECTORS.
       - Use TypeScript for the code generated.
       - Return a export default function that could be imported and executed.
       - If you move to another page, make sure the code also works for that page.
@@ -154,6 +154,7 @@ async function main() {
       - The timeout is only 10 seconds.
       - Do not show errors or timeout errors in the console.
       - If an error is thrown mention that the user suffered an error in the step that wanted to execute in the pain points.
+      - DO NOT ADD LOGS TO THE PLAYWRIGHT CODE.
 
       Use the following template for the code:
 
@@ -169,9 +170,7 @@ async function main() {
           }
       "
 
-      Record the steps you took to navigate to the product and use it as the user persona described, and return the Playwright code.
-
-      Finally return all the pain points that this user persona encountered, such as wording, finding elements in the UI flow, etc. And concise solutions to fix them.    `,
+      Finally return all the pain points that this user persona encountered, such as wording, finding elements in the UI flow, etc. And concise solutions to fix them. For each pain point like-emoji.`,
 		});
 
 		loader.stop(
