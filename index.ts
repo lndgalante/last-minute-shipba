@@ -40,7 +40,7 @@ async function main() {
 		"Your friendly UX tool to play with your first synthetic users and get feedback on your product. \n",
 	);
 
-	log.step("1/3 - Let's start with the product details.\n");
+	log.step("1/4 - Let's start with the product details.\n");
 
 	const name = await text({
 		message: "What is the product name?",
@@ -67,7 +67,7 @@ async function main() {
 		return;
 	}
 
-	loader.start("2/3 - Generating user persona...");
+	loader.start("2/4 - Generating user persona...");
 	const { object: userPersona } = await generateObject({
 		model,
 		schemaName: "userPersona",
@@ -110,11 +110,11 @@ async function main() {
 	});
 
 	loader.stop(
-		`2/3 - User persona: ${userPersona.name} from ${userPersona.location} generated ✨`,
+		`2/4 - User persona: ${userPersona.name} from ${userPersona.location} generated ✨`,
 	);
 
 	loader.start(
-		`3/3 - ${userPersona.name} is taking an initial look at the product`,
+		`3/4 - ${userPersona.name} is taking an initial look at the product`,
 	);
 
 	const { object: playwrightSteps } = await generateObject({
@@ -135,14 +135,16 @@ async function main() {
 
 
     - THE PLAYWRIGHT CODE MUST BE REAL TO NAVIGATE THE PRODUCT.
+    - EVERY TIME YOU NAVIGATE TO A NEW PAGE, READ ALL AVAILABLE TEXT IN THE PAGE TO FIND THE ELEMENTS.
     - Use TypeScript for the code generated.
     - Return a export default function that could be imported and executed.
     - If you move to another page, make sure the code also works for that page.
     - Use "domcontentloaded" as waitUntil.
-    - Really make sure that the elements selected exists in the page.
+    - Make sure 100% all the selectors used in the code are present in the page.
     - Close the browser after the workflow is finished.
     - If a timeout is exceeded, do not throw an error, just continue with the next step.
     - The timeout is only 10 seconds.
+    - Do not show errors or timeout errors in the console.
 
     Use the following template for the code:
 
@@ -167,17 +169,19 @@ async function main() {
 	});
 
 	loader.stop(
-		`3/3 - ${userPersona.name} finished taking a quick look at the product`,
+		`3/4 - ${userPersona.name} finished taking a quick look at the product`,
 	);
 
-	loader.start("4/4 - Navigating the product...");
+	loader.start(
+		`4/4 - Navigating into ${name} on behalf of ${userPersona.name}`,
+	);
 	const filePath = path.join(__dirname, "steps.ts");
 	await fs.writeFile(filePath, playwrightSteps.code, { flag: "w" });
 
 	const { default: executeProductWorkflow } = await import(filePath);
 	await executeProductWorkflow();
 
-	loader.stop("4/4 - Product navigated ✅");
+	loader.stop(`4/4 - ${userPersona.name} finished navigating into ${name} ✅`);
 
 	log.message(`Steps took by ${userPersona.name}:`);
 	log.message(playwrightSteps.stepsTook);

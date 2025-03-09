@@ -2,7 +2,6 @@
 	"name": "@lndgalante/u0",
 	"module": "index.ts",
 	"type": "module",
-	"private": true,
 	"devDependencies": {
 		"@playwright/test": "^1.51.0",
 		"@types/bun": "latest"
@@ -17,14 +16,12 @@
 		"ai": "^4.1.54",
 		"zod": "^3.24.2"
 	},
-	"bin": {
-		"u0": "./u0"
-	},
 	"files": ["u0"],
 	"scripts": {
 		"dev": "bun run --watch index.ts",
 		"build": "bun build ./index.ts --compile --outfile u0",
 		"postinstall": "npx playwright install",
 		"prepublishOnly": "bun run build"
-	}
+	},
+	"version": "0.0.1"
 }
