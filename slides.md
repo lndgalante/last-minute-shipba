@@ -1,26 +1,98 @@
 # u0
 
-Your friendly UX companion that generates your user personas to get feedback on your product.
+
+Es realmente increíble lo que podemos hacer hoy en día con herramientas como v0, Bolt, o Lovable para generar prototipos de productos.
+
+Pero hay una pieza fundamental que podemos agregrar....
+
+Y es la de testear un producto con usuarios.....
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+en concreto..
+
+u0 es una herramienta de UX para iterar tu producto rápidamente a partir de AI-synthetic users
+
+
+
+# DEMO TIME!
+
+
+
+
+
 
 # Contexto
 
 Una vez que vibe-codeaste tu landing page o producto queres probablemente testearlo con alguien y ver que podes mejorar.
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Problema
 
-Quizás no tengas a mano alguien con quien charlar, ya sea un amigo o un familiar, y querés iterar igual porque el GTM es lo que importa.
+Quizás no tengas a mano alguien con quien charlar y querés iterar igual porque el GTM es lo que importa, además que es costoso y lleva tiempo.
+Como también puede ser que tu producto/empresa esta en un early-stage.
 
-# Solución
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Propuesta de valor
 
 u0 te va ayudar con lo siguiente:
 
-1. Crear tu primeros user persona automáticamente en función a un producto que le describas
+1. Crear tu primeros user personas automáticamente en función a un producto que le describas
 
 
 
 
 
-2. Esta user persona va a conocer el producto en función a la URL del producto provista
+2. Esta user persona va a navegar el producto en función a la URL que le compartas
 
 
 
@@ -29,27 +101,18 @@ u0 te va ayudar con lo siguiente:
 3. Y por último u0 va a navegar como lo hizo tu user persona para encontrar posibles mejoras
 
 
-# DEMO TIME!!
-
-
 # Modelo de Negocio
 
 ## Modelo Freemium + SaaS
 - Gratis:
-  Generación de una persona de usuario básica con feedback limitado.
+  Generación de una persona de usuario básica con feedback limitado (hasta 10 Productos por mes)
 
 - Premium ($29-$49/mes):
 
-    * Múltiples user personas.
+    * Hasta 4 user personas.
     * Simulación avanzada de navegación.
     * Reportes detallados con sugerencias de UX.
     * Integraciones con herramientas como Figma, Notion y Hotjar.
-
-- Enterprise ($299+/mes):
-
-    * Modelos personalizados según industria.
-    * Simulación de distintos tipos de usuarios en un flujo de conversión.
-    * API para integrar con otros sistemas de feedback.
 
 
 # Ahorro en costos de UX Research

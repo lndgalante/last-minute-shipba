@@ -7,105 +7,71 @@ export default async function executeProductWorkflow() {
 
   try {
     // Navigate to Vercel homepage
-    await page.goto("https://vercel.com/home", { waitUntil: "domcontentloaded", timeout: 10000 });
+    await page.goto("https://vercel.com/", { waitUntil: "domcontentloaded", timeout: 10000 });
     
     // Read the homepage content to understand available elements
-    await page.waitForSelector('h1', { timeout: 10000 }).catch(() => {});
+    await page.waitForSelector('nav', { timeout: 10000 });
     
-    // Click on the login button
-    await page.getByRole('link', { name: 'Log In', exact: true }).click();
+    // Click on Login button as Alex would want to check out the dashboard
+    await page.click('a[href="/login"]');
     await page.waitForLoadState('domcontentloaded', { timeout: 10000 });
     
-    // Read the login page content
-    await page.waitForSelector('form', { timeout: 10000 }).catch(() => {});
+    // Explore features section - Alex is interested in deployment features
+    await page.goto("https://vercel.com/features", { waitUntil: "domcontentloaded", timeout: 10000 });
     
-    // Enter email (using a fake email for the persona)
-    await page.getByLabel('Email').fill('alex.chen@techstartup.com');
+    // Check out the Previews feature which Alex would find valuable for team collaboration
+    await page.waitForSelector('h2:has-text("Previews")', { timeout: 10000 });
     
-    // Click continue with email
-    await page.getByRole('button', { name: 'Continue with Email' }).click();
+    // Explore the Edge Network which addresses Alex's performance concerns
+    await page.waitForSelector('h2:has-text("Edge Network")', { timeout: 10000 });
+    
+    // Check out the CI/CD capabilities which is one of Alex's goals
+    await page.waitForSelector('h2:has-text("CI/CD")', { timeout: 10000 });
+    
+    // Navigate to pricing to evaluate costs as Alex works at a growing startup
+    await page.goto("https://vercel.com/pricing", { waitUntil: "domcontentloaded", timeout: 10000 });
+    
+    // Check out the different pricing tiers
+    await page.waitForSelector('div[role="tablist"]', { timeout: 10000 });
+    
+    // Look at the Pro plan which would likely be suitable for Alex's growing startup
+    await page.click('button[role="tab"]:has-text("Pro")');
+    await page.waitForTimeout(1000);
+    
+    // Explore documentation to see how easy it is to get started
+    await page.goto("https://vercel.com/docs", { waitUntil: "domcontentloaded", timeout: 10000 });
+    
+    // Check out Next.js deployment docs since Alex is proficient in Next.js
+    await page.waitForSelector('a:has-text("Next.js")', { timeout: 10000 });
+    await page.click('a:has-text("Next.js")');
     await page.waitForLoadState('domcontentloaded', { timeout: 10000 });
     
-    // Go back to homepage since we can't complete the login without real credentials
-    await page.goto("https://vercel.com/home", { waitUntil: "domcontentloaded", timeout: 10000 });
+    // Look at the GitHub integration which Alex would find valuable
+    await page.goto("https://vercel.com/docs/concepts/git/vercel-for-github", { waitUntil: "domcontentloaded", timeout: 10000 });
     
-    // Explore the product features
-    // Click on Features in the navigation
-    await page.getByRole('link', { name: 'Features' }).click();
-    await page.waitForLoadState('domcontentloaded', { timeout: 10000 });
+    // Check out the analytics feature which Alex would use to monitor performance
+    await page.goto("https://vercel.com/docs/analytics", { waitUntil: "domcontentloaded", timeout: 10000 });
     
-    // Read the features page content
-    await page.waitForSelector('h1', { timeout: 10000 }).catch(() => {});
-    
-    // Explore Next.js section as Alex specializes in Next.js
-    await page.getByRole('link', { name: 'Next.js', exact: true }).click();
-    await page.waitForLoadState('domcontentloaded', { timeout: 10000 });
-    
-    // Read the Next.js page content
-    await page.waitForSelector('h1', { timeout: 10000 }).catch(() => {});
-    
-    // Go to Pricing to check plans
-    await page.getByRole('link', { name: 'Pricing' }).click();
-    await page.waitForLoadState('domcontentloaded', { timeout: 10000 });
-    
-    // Read the pricing page content
-    await page.waitForSelector('h1', { timeout: 10000 }).catch(() => {});
-    
-    // Explore the Pro plan details which would be suitable for Alex's startup
-    const proButton = page.getByRole('button', { name: 'Pro', exact: true });
-    if (await proButton.isVisible())
-      await proButton.click();
-    
-    // Check out the documentation
-    await page.getByRole('link', { name: 'Documentation', exact: true }).click();
-    await page.waitForLoadState('domcontentloaded', { timeout: 10000 });
-    
-    // Read the documentation page content
-    await page.waitForSelector('h1', { timeout: 10000 }).catch(() => {});
-    
-    // Look for Next.js documentation specifically
-    await page.getByRole('link', { name: 'Next.js', exact: true }).first().click().catch(() => {});
-    await page.waitForLoadState('domcontentloaded', { timeout: 10000 });
-    
-    // Go to Templates to check out starter templates
+    // Finally, check out the templates to see if there are any fintech-related templates
     await page.goto("https://vercel.com/templates", { waitUntil: "domcontentloaded", timeout: 10000 });
     
-    // Read the templates page content
-    await page.waitForSelector('h1', { timeout: 10000 }).catch(() => {});
+    // Filter for Next.js templates since Alex is proficient in Next.js
+    await page.waitForSelector('button:has-text("Next.js")', { timeout: 10000 });
+    await page.click('button:has-text("Next.js")');
+    await page.waitForTimeout(2000);
     
-    // Filter for Next.js templates
-    const nextJsFilter = page.getByText('Next.js', { exact: true }).first();
-    if (await nextJsFilter.isVisible())
-      await nextJsFilter.click();
+    // Look for any dashboard templates that might be relevant for fintech
+    await page.getByPlaceholder('Search templates').fill('dashboard');
+    await page.waitForTimeout(2000);
     
-    // Check out a specific template
-    const templateCard = page.locator('.nx-grid a').first();
-    if (await templateCard.isVisible())
-      await templateCard.click();
+    // Try to sign up for a free account to explore the platform further
+    await page.goto("https://vercel.com/signup", { waitUntil: "domcontentloaded", timeout: 10000 });
     
-    await page.waitForLoadState('domcontentloaded', { timeout: 10000 });
-    
-    // Try to deploy a template (will require login)
-    const deployButton = page.getByRole('button', { name: 'Deploy', exact: true }).first();
-    if (await deployButton.isVisible())
-      await deployButton.click();
-    
-    // Go back to homepage
-    await page.goto("https://vercel.com/home", { waitUntil: "domcontentloaded", timeout: 10000 });
-    
-    // Check out the blog for latest updates
-    await page.getByRole('link', { name: 'Blog', exact: true }).click().catch(() => {});
-    await page.waitForLoadState('domcontentloaded', { timeout: 10000 });
-    
-    // Read a blog post about Next.js or performance
-    const blogPost = page.locator('article a').first();
-    if (await blogPost.isVisible())
-      await blogPost.click();
-    
-    await page.waitForLoadState('domcontentloaded', { timeout: 10000 });
+    // Select the Hobby plan which is free and good for exploration
+    await page.waitForSelector('button:has-text("Continue with Hobby")', { timeout: 10000 });
     
   } catch (error) {
-    // Continue with the workflow even if there's an error
+    // Continue with the next step if there's an error
   } finally {
     // Close the browser
     await browser.close();
