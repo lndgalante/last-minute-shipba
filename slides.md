@@ -14,7 +14,7 @@ Quizás no tengas a mano alguien con quien charlar, ya sea un amigo o un familia
 
 u0 te va ayudar con lo siguiente:
 
-1. Crear tu primer user persona automáticamente en función a un producto que le describas
+1. Crear tu primeros user persona automáticamente en función a un producto que le describas
 
 
 
@@ -27,6 +27,9 @@ u0 te va ayudar con lo siguiente:
 
 
 3. Y por último u0 va a navegar como lo hizo tu user persona para encontrar posibles mejoras
+
+
+# DEMO TIME!!
 
 
 # Modelo de Negocio
